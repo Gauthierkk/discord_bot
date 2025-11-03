@@ -126,7 +126,11 @@ ollama serve
 ### 7. Run the Bot
 
 ```bash
+# Using Python directly
 python bot.py
+
+# Or using Make
+make run
 ```
 
 You should see:
@@ -220,20 +224,35 @@ This bot uses:
 
 ### Code Quality
 
-The project uses Ruff for code formatting and linting:
+The project uses Ruff for code formatting and linting. You can use either Ruff directly or the provided Makefile:
 
 ```bash
-# Check code for issues
-ruff check .
+# Using Make (recommended)
+make format       # Format code with ruff
+make lint         # Check code for issues
+make check        # Check and auto-fix issues
 
-# Format code
-ruff format .
-
-# Auto-fix issues
-ruff check . --fix
+# Using Ruff directly
+ruff format .     # Format code
+ruff check .      # Check for issues
+ruff check . --fix # Auto-fix issues
 ```
 
 Configuration is in `pyproject.toml` with default settings (88-char line length, PEP 8 compliance).
+
+### Makefile Commands
+
+The project includes a Makefile for common tasks:
+
+```bash
+make help         # Show all available commands
+make run          # Run the Discord bot
+make format       # Format code with ruff
+make lint         # Lint code with ruff
+make check        # Check and auto-fix code issues
+make install      # Install dependencies
+make install-dev  # Install dev dependencies (including ruff)
+```
 
 ## License
 
