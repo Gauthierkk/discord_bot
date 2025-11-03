@@ -139,17 +139,32 @@ Synced Y command(s) to [Your Server Name]
 
 ## Project Structure
 
+The bot follows a clean FastAPI-style architecture with clear separation of concerns:
+
 ```
 discord-bot/
-├── .claude/              # Claude Code configuration
-│   ├── commands/         # Custom slash commands
-│   ├── config.json       # Project config
-│   └── instructions.md   # Bot development instructions
-├── bot.py               # Main bot file
-├── pyproject.toml       # Project dependencies (uv/pip)
-├── .env.example        # Environment template
-├── .gitignore          # Git ignore rules
-└── README.md           # This file
+├── bot.py                      # Main entry point - bot initialization & command registration
+├── config.py                   # Configuration - env vars, constants, settings
+│
+├── commands/                   # Command definitions (like FastAPI routers)
+│   ├── history.py              # /firstmessage
+│   ├── counting.py             # /messagecount, /dailycount, /globaldailycount
+│   └── ai.py                   # /summarize
+│
+├── services/                   # Business logic layer
+│   ├── message_service.py      # Message fetching, filtering, formatting
+│   ├── ai_service.py           # Ollama integration, prompt building
+│   └── analytics_service.py    # Statistics, data processing with pandas
+│
+├── utils/                      # Utility functions
+│   ├── embed_builder.py        # Discord embed creation helpers
+│   └── validators.py           # Input validation
+│
+├── pyproject.toml              # Project dependencies and configuration
+├── uv.lock                     # Locked dependencies
+├── .env.example                # Environment template
+├── .gitignore                  # Git ignore rules
+└── README.md                   # This file
 ```
 
 ## How It Works
@@ -193,12 +208,32 @@ discord-bot/
 
 ## Development
 
+### Tech Stack
+
 This bot uses:
 - **discord.py 2.0+**: Modern Discord API wrapper
 - **pandas 2.0+**: Data analysis and processing
 - **ollama**: Interface with local LLMs for AI summarization
 - **aiohttp**: Async HTTP client for downloading images
 - **python-dotenv**: Environment variable management
+- **ruff**: Fast Python linter and formatter
+
+### Code Quality
+
+The project uses Ruff for code formatting and linting:
+
+```bash
+# Check code for issues
+ruff check .
+
+# Format code
+ruff format .
+
+# Auto-fix issues
+ruff check . --fix
+```
+
+Configuration is in `pyproject.toml` with default settings (88-char line length, PEP 8 compliance).
 
 ## License
 
