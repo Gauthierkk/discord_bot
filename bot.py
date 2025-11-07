@@ -7,7 +7,7 @@ import discord
 from discord import app_commands
 
 # Import command modules
-from commands import ai, counting, history
+from commands import ai, counting, history, humour
 
 # Import configuration
 from config import TOKEN, logger
@@ -56,6 +56,7 @@ async def on_ready():
 history.setup_commands(tree)
 counting.setup_commands(tree)
 ai.setup_commands(tree)
+humour.setup_commands(tree)
 
 
 # Run the bot

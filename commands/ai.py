@@ -26,19 +26,10 @@ def setup_commands(tree: app_commands.CommandTree):
         name="summarize",
         description="Generate an AI summary of messages in this channel",
     )
-    @app_commands.describe(
-        timeframe="Number of hours or days to analyze", unit="Time unit (hours or days)"
-    )
-    @app_commands.choices(
-        unit=[
-            app_commands.Choice(name="Hours", value="hours"),
-            app_commands.Choice(name="Days", value="days"),
-        ]
-    )
+    @app_commands.describe(timeframe='Enter like "1 hour" or "2 days" (default: 1 day)')
     async def summarize(
         interaction: discord.Interaction,
-        timeframe: int = 1,
-        unit: app_commands.Choice[str] = None,
+        timeframe: str = "1 day",
     ):
         """Generate a summary of messages using Ollama"""
         await interaction.response.defer()
@@ -46,17 +37,32 @@ def setup_commands(tree: app_commands.CommandTree):
         try:
             channel = interaction.channel
 
-            # Default to days if no unit specified
-            time_unit = unit.value if unit else "days"
+            # Parse the timeframe string (e.g., "1 hour", "2 days", "24 hours")
+            parts = timeframe.strip().split()
+
+            if len(parts) != 2:
+                await interaction.followup.send(
+                    'Invalid format! Please use format like "1 hour" or "2 days"'
+                )
+                return
+
+            try:
+                time_value = int(parts[0])
+                time_unit = parts[1]
+            except ValueError:
+                await interaction.followup.send(
+                    'Invalid number! Please use format like "1 hour" or "2 days"'
+                )
+                return
 
             # Validate timeframe
-            is_valid, error_message = validate_timeframe(timeframe, time_unit)
+            is_valid, error_message = validate_timeframe(time_value, time_unit)
             if not is_valid:
                 await interaction.followup.send(error_message)
                 return
 
             # Calculate time window
-            time_start, time_desc = calculate_time_window(timeframe, time_unit)
+            time_start, time_desc = calculate_time_window(time_value, time_unit)
 
             # Fetch messages
             logger.info(
